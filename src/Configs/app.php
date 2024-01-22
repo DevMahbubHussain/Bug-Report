@@ -1,8 +1,8 @@
 <?php
 
-return [
+return array(
     'app_name' => 'Bug Report App',
     'env' => 'local',
     'debug' => true,
-    'log_path' => __DIR__ . '/../Logger'
-];
+    'log_path' => __DIR__ . '/../Logger',
+);

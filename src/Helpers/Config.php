@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
+use App\Exception\NotFoundException;
 
 class Config
 {
@@ -27,8 +28,9 @@ class Config
             }
         } catch (\Throwable $th) {
             // die($th->getMessage());
-            throw new \RuntimeException(
-                sprintf('The Specified file %s was not found', $filename)
+            throw new NotFoundException(
+                sprintf('The Specified file %s was not found', $filename),
+                ['Not found file', 'set data']
             );
         }
         return $filecontent;
