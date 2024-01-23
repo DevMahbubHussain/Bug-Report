@@ -6,6 +6,8 @@ use App\Exception\InvalidLogLevelArgument;
 use App\Helpers\App;
 use App\Interfaces\LoggerInterface;
 use ReflectionClass;
+use InvalidArgumentException;
+// use Psr\Log\LogLevel;
 
 class Logger implements LoggerInterface
 {
@@ -46,15 +48,44 @@ class Logger implements LoggerInterface
         $this->addRecord(LogLevel::DEBUG, $message, $context);
     }
 
+    // public function log($level, $message, array $context = array())
+    // {
+    //     $validLogLevels = array_flip((new ReflectionClass(LogLevel::class))->getConstants());
+
+    //     // Check if $level is a valid log level in a case-insensitive manner
+    //     $normalizedLevel = strtoupper($level);
+    //     if (!isset($validLogLevels[$normalizedLevel])) {
+    //         throw new InvalidLogLevelArgument("Invalid log level: $level");
+    //     }
+
+    //     // Your actual logging logic goes here
+    //     $this->addRecord($normalizedLevel, $message, $context);
+    // }
+
     public function log($message, $level, $context = array())
     {
-        $object = new ReflectionClass(LogLevel::class);
-        $validLogLevelsArray = $object->getConstants();
-        if (!in_array($level, $validLogLevelsArray)) {
-            throw new InvalidLogLevelArgument($level, $validLogLevelsArray);
+        // $object = new ReflectionClass(LogLevel::class);
+        $validLogLevels = array_flip((new ReflectionClass(LogLevel::class))->getConstants());
+        $normalizedLevel = strtoupper($level);
+        if (!isset($validLogLevels[$normalizedLevel])) {
+            throw new InvalidLogLevelArgument("Invalid log level: $level");
         }
+        // if (!in_array($level, $validLogLevels)) {
+        //     throw new InvalidLogLevelArgument($level, $validLogLevelsArray);
+        // }
         $this->addRecord($level, $message, $context);
     }
+
+    // public function log($level, $message, array $context = array())
+    // {
+    //     // Check if $level is a valid PSR-3 log level
+    //     if (!defined(LogLevel::class . '::' . strtoupper($level))) {
+    //         throw new InvalidLogLevelArgument("Invalid log level: $level");
+    //     }
+
+    //     // Your actual logging logic goes here
+    //     $this->addRecord(strtoupper($level), $message, $context);
+    // }
 
     private function addRecord(string $level, string $message,  $context = array())
     {
